@@ -1,1 +1,1 @@
-add_subdirctory(NeuralNetwork)
+add_subdirectory(NeuralNetwork)
