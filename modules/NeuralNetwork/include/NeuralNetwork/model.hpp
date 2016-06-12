@@ -94,12 +94,12 @@ public:
 private:
   void fit_on_batch(
       const sequence_type<const traits::input_type>& inputs,
-      const sequence_type<const traits::output_type>& traints,
+      const sequence_type<const traits::output_type>& trains,
       std::size_t batch_size
   )
   {
     for (int i = 0; i < batch_size; i++){
-      scalar loss = objective_function(predict(inputs[i]), traints[i]);
+      scalar loss = objective_function(predict(inputs[i]), trains[i]);
       update(loss);
     }
   }
