@@ -84,7 +84,7 @@ public:
       for (int batch_no = 0; batch_no < inputs.size() / batch_size; batch_no++){
         for (int j = 0; j < batch_size; j++){
           inputs_on_batch[j] = inputs[indices[batch_no * batch_size + j]];
-          trains_on_batch[j] = inputs[indices[batch_no * batch_size + j]];
+          trains_on_batch[j] = trains[indices[batch_no * batch_size + j]];
         }
         fit_on_batch(inputs_on_batch, trains_on_batch);
       }
@@ -94,12 +94,12 @@ public:
 private:
   void fit_on_batch(
       const sequence_type<const traits::input_type>& inputs,
-      const sequence_type<const traits::output_type>& traints,
+      const sequence_type<const traits::output_type>& trains,
       std::size_t batch_size
   )
   {
     for (int i = 0; i < batch_size; i++){
-      scalar loss = objective_function(predict(inputs[i]), traints[i]);
+      scalar loss = objective_function(predict(inputs[i]), trains[i]);
       update(loss);
     }
   }
