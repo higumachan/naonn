@@ -4,7 +4,7 @@
 ################################################################################
 
 # add library
-file(GLOB DETECTOR_SOURCES src/NeuralNetwork/*.cpp include/NeuralNetwork/*.hpp)
+file(GLOB NEURAL_NETWORK_SOURCES src/NeuralNetwork/*.cpp include/NeuralNetwork/*.hpp)
 add_library(NeuralNetwork ${NEURAL_NETWORK_SOURCES})
 
 # set include directories
