@@ -30,7 +30,7 @@ public:
   { }
 
   using value_type = typename Operator::result_of_apply;
-  using grad_type = typename Operator::result_of_apply;
+  using grad_type = typename Operator::result_of_grad;
 
   value_type get_value() const
   {
