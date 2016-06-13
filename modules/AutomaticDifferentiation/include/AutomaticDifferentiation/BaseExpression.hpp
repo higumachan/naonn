@@ -14,12 +14,12 @@ class BaseExpression
   const Derived& derived() const
   { return static_cast<Derived&>(*this); }
 
-  static Derived::value_type get_value();
+  static Derived::grad_type get_value();
 
-  static Derived::value_type get_grad(const Derived& target);
+  static Derived::grad_type get_grad(const Derived& target);
 
   template<typename TargetType, int OTHER_ID>
-  static Derived::value_type get_grad(const variable::Variable <TargetType, ID>& target);
+  static Derived::grad_type get_grad(const variable::Variable <TargetType, ID>& target);
 
 };
 
