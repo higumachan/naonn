@@ -5,25 +5,37 @@
 #include "Variable.hpp"
 #include "BinaryExpressions.hpp"
 
-namespace nyao {
-namespace differentiation {
-namespace automatic {
-namespace operators {
+namespace nyao
+{
+namespace differentiation
+{
+namespace automatic
+{
+namespace operators
+{
 
 //{{{ ApplyBinaryFunctionBase
-template <typename Derived, typename InputTypeLeft, typename InputTypeRight, typename OutputType> struct ApplyBinaryFunctionBase {
-  Derived &derived() { return static_cast<Derived &>(*this); }
+template<typename Derived, typename InputTypeLeft, typename InputTypeRight, typename OutputType>
+struct ApplyBinaryFunctionBase
+{
+  Derived& derived()
+  { return static_cast<Derived&>(*this); }
 
-  const Derived &derived() const { return static_cast<Derived &>(*this); }
+  const Derived& derived() const
+  { return static_cast<Derived&>(*this); }
 
 
-  static OutputType apply(InputTypeLeft left, InputTypeRight right) {
+  static OutputType apply(InputTypeLeft left, InputTypeRight right)
+  {
     return Derived::apply_detail(left, right);
   }
 
-  template <typename Left, typename Right, typename TargetType, int ID>
-  static OutputType grad(const variable::Variable<TargetType, ID> &target, const Left &left,
-      const Right &right) {
+  template<typename Left, typename Right, typename TargetType, int ID>
+  static OutputType grad(
+      const variable::Variable<TargetType, ID>& target, const Left& left,
+      const Right& right
+  )
+  {
     return (Derived::grad_detail_left(left.get_value(), right.get_value()) *
         left.get_grad(target) +
         Derived::grad_detail_right(left.get_value(), right.get_value()) *
@@ -33,12 +45,17 @@ template <typename Derived, typename InputTypeLeft, typename InputTypeRight, typ
   using result_of_apply = std::result_of<decltype(apply)>::type;
   using result_of_grad = std::result_of<decltype(grad)>::type;
 
-  static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y);
-  static OutputType grad_detail(const InputTypeLeft &x, const InputTypeRight &y);
-  static OutputType grad_detail_left(const InputTypeLeft &x, const InputTypeRight &y) {
+  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y);
+
+  static OutputType grad_detail(const InputTypeLeft& x, const InputTypeRight& y);
+
+  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return Derived::grad_detail(x, y);
   }
-  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) {
+
+  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return Derived::grad_detail(x, y);
   }
 
@@ -46,45 +63,72 @@ template <typename Derived, typename InputTypeLeft, typename InputTypeRight, typ
 // }}}
 
 
-namespace basics {
+namespace basics
+{
 // {{{ basic operators
-template <typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-struct max : public ApplyBinaryFunctionBase<max, InputTypeLeft, InputTypeRight, OutputType> {
-  static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y) {
+template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
+struct max
+    : public ApplyBinaryFunctionBase<max, InputTypeLeft, InputTypeRight, OutputType>
+{
+  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x > y ? x : y;
   }
-  static OutputType grad_detail_left(const InputTypeLeft &x, const InputTypeRight &y) {
+
+  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x > y ? 1 : 0;
   }
-  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) {
+
+  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x < y ? 1 : 0;
   }
 };
 
-template <typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-struct min : public ApplyBinaryFunctionBase<min, InputTypeLeft, InputTypeRight, OutputType> {
-  static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y) {
+template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
+struct min
+    : public ApplyBinaryFunctionBase<min, InputTypeLeft, InputTypeRight, OutputType>
+{
+  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x < y ? x : y;
   }
-  static OutputType grad_detail_left(const InputTypeLeft &x, const InputTypeRight &y) {
+
+  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x < y ? 1 : 0;
   }
-  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) {
+
+  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  {
     return x > y ? 1 : 0;
   }
 };
 
-template <typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-struct plus : public ApplyBinaryFunctionBase<plus, InputTypeLeft, InputTypeRight, OutputType> {
-  static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y) { return x + y; }
-  static OutputType grad_detail(const InputTypeLeft &x, const InputTypeRight &y) { return 1; }
+template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
+struct plus
+    : public ApplyBinaryFunctionBase<plus, InputTypeLeft, InputTypeRight, OutputType>
+{
+  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  { return x + y; }
+
+  static OutputType grad_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  { return 1; }
 };
 
-template <typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-struct multiply : public ApplyBinaryFunctionBase<multiply, InputTypeLeft, InputTypeRight, OutputType> {
-  static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y) { return x * y; }
-  static OutputType grad_detail_left(const InputTypeLeft &x, const InputTypeRight &y) { return y; }
-  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) { return x; }
+template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
+struct multiply
+    : public ApplyBinaryFunctionBase<multiply, InputTypeLeft, InputTypeRight, OutputType>
+{
+  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  { return x * y; }
+
+  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  { return y; }
+
+  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  { return x; }
 };
 
 // }}}
@@ -120,8 +164,11 @@ expressions::BinaryExpressions<ConstVariable<Type>, basics::OPERATOR_TYPE, Right
 //}}}
 
 DEFINE_BINARY_OPERATORS(operator+, plus)
+
 DEFINE_BINARY_OPERATORS(operator*, multiply)
+
 DEFINE_BINARY_OPERATORS(min, min)
+
 DEFINE_BINARY_OPERATORS(max, max)
 
 }
