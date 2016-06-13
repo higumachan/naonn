@@ -48,12 +48,7 @@ class Model
   using input_type = typename traits::input_type;
   using output_type = typename traits::output_type;
   using scalar = float;
-  using objective_function_type = std::binary_function<
-      const output_type&,
-      const output_type&,
-      scalar
-  >;
-
+  using objective_function_type = std::function<scalar(const output_type&, const output_type&)>;
 public:
   output_type predict(const input_type& input) const
   {
