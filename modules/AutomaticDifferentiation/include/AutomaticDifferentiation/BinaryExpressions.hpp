@@ -13,7 +13,11 @@ namespace automatic
 namespace expressions
 {
 
-template<class Left, class Operator, class Right>
+template<
+    typename Left,
+    typename Operator,
+    typename Right
+>
 class BinaryExpression
     : public BaseExpression<BinaryExpression<Left, Operator, Right>>
 {
