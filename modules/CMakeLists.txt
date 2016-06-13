@@ -1,1 +1,2 @@
 add_subdirectory(NeuralNetwork)
+add_subdirectory(AutomaticDifferentiation)
