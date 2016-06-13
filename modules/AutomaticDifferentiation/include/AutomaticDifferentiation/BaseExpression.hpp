@@ -14,7 +14,7 @@ class BaseExpression
   const Derived& derived() const
   { return static_cast<Derived&>(*this); }
 
-  static Derived::grad_type get_value();
+  static Derived::vale_type get_value();
 
   static Derived::grad_type get_grad(const Derived& target);
 
