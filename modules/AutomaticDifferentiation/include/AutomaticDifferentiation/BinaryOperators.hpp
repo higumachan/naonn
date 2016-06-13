@@ -163,13 +163,13 @@ template< \
 > \
 expressions::BinaryExpressions< \
   expressions::BaseExpressions<Left>, \
-  basics::OPERATOR_TYPE,  \
+  OPERATOR_TYPE,  \
   expressions::BaseExpressions<Right> \
 > OPERATOR_NAME(const Left& left, const Right& right) \
 { \
   expressions::BinaryExpressions< \
     expressions::BaseExpressions<Left>, \
-    basics::OPERATOR_TYPE, \
+    OPERATOR_TYPE, \
     BaseExpressions<Right> \
   >(left, right); \
 } \
@@ -180,13 +180,13 @@ template< \
 > \
 expressions::BinaryExpressions< \
   expressions::BaseExpressions<Left>, \
-  basics::OPERATOR_TYPE, \
+  OPERATOR_TYPE, \
   variable::ConstVariable<Type>\
 > OPERATOR_NAME(const Left& left, const Type& right) \
 { \
   expressions::BinaryExpressions< \
     expressions::BaseExpressions<Left>, \
-    basics::OPERATOR_TYPE, \
+    OPERATOR_TYPE, \
     variable::ConstVariable<Type> \
   >(left, variable::ConstVariable<Type>(right)); \
 } \
@@ -197,26 +197,26 @@ template< \
 > \
 expressions::BinaryExpressions< \
   variable::ConstVariable<Type>, \
-  basics::OPERATOR_TYPE, \
+  OPERATOR_TYPE, \
   expressions::BaseExpressions<Right>\
 > OPERATOR_NAME(const Type& left, const Right& right) \
 { \
   expressions::BinaryExpressions<\
     variable::ConstVariable<Type>, \
-    basics::OPERATOR_TYPE, \
+    OPERATOR_TYPE, \
     expressions::BaseExpressions<Right> \
   >(variable::ConstVariable<Type>(left), right); \
 }
 
 //}}}
 
-DEFINE_BINARY_OPERATORS(operator+, plus)
+DEFINE_BINARY_OPERATORS(operator+, basics::plus)
 
-DEFINE_BINARY_OPERATORS(operator*, multiply)
+DEFINE_BINARY_OPERATORS(operator*, basics::multiply)
 
-DEFINE_BINARY_OPERATORS(min, min)
+DEFINE_BINARY_OPERATORS(min, basics::min)
 
-DEFINE_BINARY_OPERATORS(max, max)
+DEFINE_BINARY_OPERATORS(max, basics::max)
 
 }
 }
