@@ -1,6 +1,7 @@
 #ifndef NAONN_BINARY_OPERATORS_HPP
 #define NAONN_BINARY_OPERATORS_HPP
 
+#include "BaseExpression.hpp"
 #include "Variable.hpp"
 
 namespace nyao
@@ -14,6 +15,7 @@ namespace expressions
 
 template<class Left, class Operator, class Right>
 class BinaryExpression
+    : public BaseExpression<BinaryExpression<Left, Operator, Right>>
 {
   Left left;
   Right right;
@@ -23,13 +25,16 @@ public:
       : left(l), right(r)
   { }
 
-  Operator::result_of_apply get_value() const
+  using value_type = typename Operator::result_of_apply;
+  using grad_type = typename Operator::result_of_apply;
+
+  value_type get_value() const
   {
     return Operator::apply(left.get_value(), right.get_value());
   }
 
-  template<int ID>
-  Operator::result_of_grad get_grad(const variable::Variable<float, ID>& target) const
+  template<typename TargetType, int ID>
+  grad_type get_grad(const variable::Variable<TargetType, ID>& target) const
   {
     return Operator::grad(target, left, right);
   }

@@ -18,6 +18,7 @@ namespace expressions
 
 template<typename Operator, typename Operand>
 class UnaryExpression
+    : public BaseExpression<UnaryExpression<Operator, Operand>>
 {
   Operand operand;
 
@@ -26,13 +27,16 @@ public:
       : operand(_operand)
   { }
 
-  Operator::result_of_apply get_value() const
+  using value_type = typename Operator::result_of_apply;
+  using grad_type = typename Operator::result_of_grad;
+
+  value_type get_value() const
   {
     return Operator::apply(operand.get_value());
   }
 
-  template<int ID>
-  Operator::result_of_grad get_grad(const variable::Variable<float, ID>& target) const
+  template<typename TargetType, int ID>
+  grad_type grad(const variable::Variable<TargetType, ID>& target) const
   {
     return Operator::grad(target, operand);
   }

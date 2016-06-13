@@ -1,6 +1,7 @@
 #ifndef NAONN_VARIABLE_HPP
 #define NAONN_VARIABLE_HPP
 
+#include "BaseExpression.hpp"
 #include "TypeHelper.hpp"
 
 namespace nyao
@@ -18,9 +19,13 @@ template<
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
 class Variable
+    : BaseExpression<Variable<Type, ID, TypeHelper>>
 {
 public:
   static const int id = ID;
+
+  using value_type = Type;
+  using grad_type = Type;
 
   Variable(const Type& _value)
       : value(_value)
@@ -29,22 +34,22 @@ public:
   void set_value(const Type& _value)
   { value = _value; }
 
-  Type get_value() const
+  value_type get_value() const
   { return value; }
 
-  Type get_grad(const Variable<Type, ID, TypeHelper>& target) const
+  grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
   {
     return TypeHelper::one;
   }
 
   template<typename OtherType, int OTHER_ID, typename OtherTypeHelper>
-  virtual Type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>& target) const
+  grad_type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>&) const
   {
     return (TypeHelper::zero);
   }
 
 private:
-  Type value;
+  value_type value;
 };
 
 namespace
@@ -57,15 +62,15 @@ template<
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
 class ConstVariable
-    : public Variable<Type, CONST_VARIABLE_ID>
+    : public Variable<Type, CONST_VARIABLE_ID, TypeHelper>
 {
 public:
   ConstVariable(const Type& _value)
-      : Variable(_value)
+      : Variable<Type, CONST_VARIABLE_ID, TypeHelper>(_value)
   { }
 
   template<typename OtherType, int OTHER_ID, typename OtherTypeHelper>
-  virtual Type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>& target) const
+  Type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>&) const
   {
     return TypeHelper::zero;
   }
