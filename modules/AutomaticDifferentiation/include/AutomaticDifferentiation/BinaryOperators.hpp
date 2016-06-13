@@ -32,7 +32,8 @@ struct ApplyBinaryFunctionBase
 
   template<typename Left, typename Right, typename TargetType, int ID>
   static OutputType grad(
-      const variable::Variable<TargetType, ID>& target, const Left& left,
+      const variable::Variable<TargetType, ID>& target,
+      const Left& left,
       const Right& right
   )
   {
@@ -42,8 +43,8 @@ struct ApplyBinaryFunctionBase
             right.get_grad(target));
   }
 
-  using result_of_apply = std::result_of<decltype(apply)>::type;
-  using result_of_grad = std::result_of<decltype(grad)>::type;
+  using result_of_apply = typename std::result_of<decltype(apply)>::type;
+  using result_of_grad = typename std::result_of<decltype(grad)>::type;
 
   static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y);
 
@@ -68,7 +69,12 @@ namespace basics
 // {{{ basic operators
 template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
 struct max
-    : public ApplyBinaryFunctionBase<max, InputTypeLeft, InputTypeRight, OutputType>
+    : public ApplyBinaryFunctionBase<
+        max<InputTypeLeft, InputTypeRight, OutputType>,
+        InputTypeLeft,
+        InputTypeRight,
+        OutputType
+    >
 {
   static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
   {
@@ -88,7 +94,12 @@ struct max
 
 template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
 struct min
-    : public ApplyBinaryFunctionBase<min, InputTypeLeft, InputTypeRight, OutputType>
+    : public ApplyBinaryFunctionBase<
+        min<InputTypeLeft, InputTypeRight, OutputType>,
+        InputTypeLeft,
+        InputTypeRight,
+        OutputType
+    >
 {
   static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
   {
@@ -108,26 +119,36 @@ struct min
 
 template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
 struct plus
-    : public ApplyBinaryFunctionBase<plus, InputTypeLeft, InputTypeRight, OutputType>
+    : public ApplyBinaryFunctionBase<
+        plus<InputTypeLeft, InputTypeRight, OutputType>,
+        InputTypeLeft,
+        InputTypeRight,
+        OutputType
+    >
 {
   static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
   { return x + y; }
 
-  static OutputType grad_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  static OutputType grad_detail(const InputTypeLeft&, const InputTypeRight&)
   { return 1; }
 };
 
 template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
 struct multiply
-    : public ApplyBinaryFunctionBase<multiply, InputTypeLeft, InputTypeRight, OutputType>
+    : public ApplyBinaryFunctionBase<
+        multiply<InputTypeLeft, InputTypeRight, OutputType>,
+        InputTypeLeft,
+        InputTypeRight,
+        OutputType
+    >
 {
   static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
   { return x * y; }
 
-  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  static OutputType grad_detail_left(const InputTypeLeft&, const InputTypeRight& y)
   { return y; }
 
-  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight&)
   { return x; }
 };
 
@@ -137,28 +158,30 @@ struct multiply
 // {{{ DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE)
 #define DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE) \
 template< \
-  template Left, \
-  template Right \
+  typename Left, \
+  typename Right \
 > \
 expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, Right> OPERATOR_NAME(const Left& left, const Right& right) \
 { \
   expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, Right>(left, right); \
 } \
+\
 template< \
-  template Left, \
-  template Type \
+  typename Left, \
+  typename Type \
 > \
-expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, ConstVariable<Type>> OPERATOR_NAME(const Left& left, const Type& right) \
+\
+expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, variable::ConstVariable<Type>> OPERATOR_NAME(const Left& left, const Type& right) \
 { \
-  expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, ConstVariable<Type>>(left, ConstVariable<Type>(right)); \
+  expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, variable::ConstVariable<Type>>(left, variable::ConstVariable<Type>(right)); \
 } \
+\
 template< \
-  template Right, \
-  template Type \
-> \
-expressions::BinaryExpressions<ConstVariable<Type>, basics::OPERATOR_TYPE, Right> OPERATOR_NAME(const Type& left, const Right& right) \
+  typename Right, \
+  typename Type \
+> expressions::BinaryExpressions<variable::ConstVariable<Type>, basics::OPERATOR_TYPE, Right> OPERATOR_NAME(const Type& left, const Right& right) \
 { \
-  expressions::BinaryExpressions<ConstVariable<Type>, basics::OPERATOR_TYPE, Right>(ConstVariable<Type>(left), right); \
+  expressions::BinaryExpressions<variable::ConstVariable<Type>, basics::OPERATOR_TYPE, Right>(variable::ConstVariable<Type>(left), right); \
 }
 
 //}}}

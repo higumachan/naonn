@@ -40,8 +40,8 @@ struct ApplyUnaryFunctionBase
     return Derived::grad_detail(operand.get_value()) * operand.get_grad(target);
   }
 
-  using result_of_apply = std::result_of<decltype(apply)>::type;
-  using result_of_grad = std::result_of<decltype(grad)>::type;
+  using result_of_apply = typename std::result_of<decltype(apply)>::type;
+  using result_of_grad = typename std::result_of<decltype(grad)>::type;
 
   static OutputType grad_detail(const InputType& x);
 
@@ -59,7 +59,7 @@ template<
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
 struct nagate
-    : public ApplyUnaryFunctionBase<nagate, Type, Type>
+    : public ApplyUnaryFunctionBase<nagate<Type, TypeHelper>, Type, Type>
 {
   static Type apply_detail(const Type& x)
   { return -x; }
@@ -74,7 +74,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct sin
-    : public ApplyUnaryFunctionBase<sin, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<sin<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return InputTypeHelper::sin(x); }
@@ -89,7 +89,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct cos
-    : public ApplyUnaryFunctionBase<cos, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<cos<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return InputTypeHelper::cos(x); }
@@ -104,7 +104,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct exp
-    : public ApplyUnaryFunctionBase<exp, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<exp<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return InputTypeHelper::exp(x); }
@@ -119,7 +119,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct log
-    : public ApplyUnaryFunctionBase<log, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<log<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return InputTypeHelper::log(x); }
@@ -134,7 +134,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct max0
-    : public ApplyUnaryFunctionBase<max0, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<max0<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return x > InputTypeHelper::zero ? x : 0; }
@@ -149,7 +149,7 @@ template<
     typename InputTypeHelper=type_helper::TypeHelper<InputType>
 >
 struct min0
-    : public ApplyUnaryFunctionBase<min0, InputType, OutputType>
+    : public ApplyUnaryFunctionBase<min0<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
 {
   static OutputType apply_detail(const InputType& x)
   { return x < InputTypeHelper::zero ? x : 0; }
@@ -187,6 +187,7 @@ DEFINE_UNARY_OPERATORS(max0, basics::max0)
 DEFINE_UNARY_OPERATORS(min0, basics::min0)
 
 
+}
 }
 }
 }
