@@ -5,6 +5,8 @@
 #ifndef NAONN_UNARYEXPRESSIONS_HPP
 #define NAONN_UNARYEXPRESSIONS_HPP
 
+#include "Variable.hpp"
+
 namespace nyao
 {
 namespace differentiation
@@ -30,7 +32,7 @@ public:
   }
 
   template<int ID>
-  Operator::result_of_grad get_grad(const Variable<float, ID>& target) const
+  Operator::result_of_grad get_grad(const variable::Variable<float, ID>& target) const
   {
     return Operator::grad(target, operand);
   }
