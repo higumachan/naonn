@@ -87,7 +87,7 @@ public:
           inputs_on_batch[j] = inputs[indices[batch_no * batch_size + j]];
           trains_on_batch[j] = trains[indices[batch_no * batch_size + j]];
         }
-        fit_on_batch(inputs_on_batch, trains_on_batch);
+        fit_on_batch(inputs_on_batch, trains_on_batch, batch_size);
       }
     }
   }
