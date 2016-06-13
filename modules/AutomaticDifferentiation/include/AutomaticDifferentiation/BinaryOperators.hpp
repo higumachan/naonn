@@ -84,7 +84,7 @@ template <typename InputTypeLeft, typename InputTypeRight, typename OutputType>
 struct multiply : public ApplyBinaryFunctionBase<multiply, InputTypeLeft, InputTypeRight, OutputType> {
   static OutputType apply_detail(const InputTypeLeft &x, const InputTypeRight &y) { return x * y; }
   static OutputType grad_detail_left(const InputTypeLeft &x, const InputTypeRight &y) { return y; }
-  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) { return o; }
+  static OutputType grad_detail_right(const InputTypeLeft &x, const InputTypeRight &y) { return x; }
 };
 
 // }}}
