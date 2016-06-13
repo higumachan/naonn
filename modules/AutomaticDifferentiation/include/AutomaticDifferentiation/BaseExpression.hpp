@@ -5,6 +5,15 @@
 #ifndef NAONN_BASEEXPRESSION_HPP
 #define NAONN_BASEEXPRESSION_HPP
 
+namespace nyao
+{
+namespace differentiation
+{
+namespace automatic
+{
+namespace expressions
+{
+
 template<typename Derived>
 class BaseExpression
 {
@@ -22,5 +31,10 @@ class BaseExpression
   static Derived::grad_type get_grad(const variable::Variable <TargetType, ID>& target);
 
 };
+
+}
+}
+}
+}
 
 #endif //NAONN_BASEEXPRESSION_HPP
