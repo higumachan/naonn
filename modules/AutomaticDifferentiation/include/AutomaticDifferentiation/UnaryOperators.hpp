@@ -26,7 +26,7 @@ struct ApplyUnaryFunctionBase {
   }
 
   template <typename TargetType, int ID>
-  static OutputType grad(const Variable<TargetType, ID> &target, const InputType &operand) {
+  static OutputType grad(const variable::Variable<TargetType, ID> &target, const InputType &operand) {
     return Derived::grad_detail(operand.get_value()) * operand.get_grad(target);
   }
   using result_of_apply = std::result_of<decltype(apply)>::type;
