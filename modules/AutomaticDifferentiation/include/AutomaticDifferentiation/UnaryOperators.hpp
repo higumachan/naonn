@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include "Variable.hpp"
+#include "UnaryExpressions.hpp"
 
 namespace nyao {
 namespace differentiation {
@@ -113,7 +114,26 @@ struct min0 : public ApplyUnaryFunctionBase<min0, InputType, OutputType> {
 
 //}}}
 } // namespace basics
+
+// {{{ DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE)
+#define DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE) template< \
+  template Operand \
+> \
+expressions::UnaryExpressions<OPERATOR_TYPE, Operand> OPERATOR_NAME(const Operand& operand) \
+{ \
+  return expressions::BinaryExpressions<OPERATOR_TYPE, Operand>(operand); \
+} \
+
 //}}}
+
+DEFINE_UNARY_OPERATORS(operator-, basics::nagate)
+DEFINE_UNARY_OPERATORS(sin, basics::sin)
+DEFINE_UNARY_OPERATORS(cos, basics::cos)
+DEFINE_UNARY_OPERATORS(exp, basics::exp)
+DEFINE_UNARY_OPERATORS(log, basics::log)
+DEFINE_UNARY_OPERATORS(max0, basics::max0)
+DEFINE_UNARY_OPERATORS(min0, basics::min0)
+
 
 }
 }
