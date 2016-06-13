@@ -161,27 +161,51 @@ template< \
   typename Left, \
   typename Right \
 > \
-expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, Right> OPERATOR_NAME(const Left& left, const Right& right) \
+expressions::BinaryExpressions< \
+  expressions::BaseExpressions<Left>, \
+  basics::OPERATOR_TYPE,  \
+  expressions::BaseExpressions<Right> \
+> OPERATOR_NAME(const Left& left, const Right& right) \
 { \
-  expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, Right>(left, right); \
+  expressions::BinaryExpressions< \
+    expressions::BaseExpressions<Left>, \
+    basics::OPERATOR_TYPE, \
+    BaseExpressions<Right> \
+  >(left, right); \
 } \
 \
 template< \
   typename Left, \
   typename Type \
 > \
-\
-expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, variable::ConstVariable<Type>> OPERATOR_NAME(const Left& left, const Type& right) \
+expressions::BinaryExpressions< \
+  expressions::BaseExpressions<Left>, \
+  basics::OPERATOR_TYPE, \
+  variable::ConstVariable<Type>\
+> OPERATOR_NAME(const Left& left, const Type& right) \
 { \
-  expressions::BinaryExpressions<Left, basics::OPERATOR_TYPE, variable::ConstVariable<Type>>(left, variable::ConstVariable<Type>(right)); \
+  expressions::BinaryExpressions< \
+    expressions::BaseExpressions<Left>, \
+    basics::OPERATOR_TYPE, \
+    variable::ConstVariable<Type> \
+  >(left, variable::ConstVariable<Type>(right)); \
 } \
 \
 template< \
   typename Right, \
   typename Type \
-> expressions::BinaryExpressions<variable::ConstVariable<Type>, basics::OPERATOR_TYPE, Right> OPERATOR_NAME(const Type& left, const Right& right) \
+> \
+expressions::BinaryExpressions< \
+  variable::ConstVariable<Type>, \
+  basics::OPERATOR_TYPE, \
+  expressions::BaseExpressions<Right>\
+> OPERATOR_NAME(const Type& left, const Right& right) \
 { \
-  expressions::BinaryExpressions<variable::ConstVariable<Type>, basics::OPERATOR_TYPE, Right>(variable::ConstVariable<Type>(left), right); \
+  expressions::BinaryExpressions<\
+    variable::ConstVariable<Type>, \
+    basics::OPERATOR_TYPE, \
+    expressions::BaseExpressions<Right> \
+  >(variable::ConstVariable<Type>(left), right); \
 }
 
 //}}}
