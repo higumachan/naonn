@@ -4,6 +4,9 @@
 
 #ifndef NAONN_VARIABLETYPEWRAPPER_HPP
 #define NAONN_VARIABLETYPEWRAPPER_HPP
+
+#include <cmath>
+
 namespace nyao
 {
 namespace differentiation
@@ -31,6 +34,27 @@ struct TypeHelper<float>
   {
     return 1.0f;
   }
+
+  static float sin(float x)
+  {
+    return std::sin(x);
+  }
+
+  static float cos(float x)
+  {
+    return std::cos(x);
+  }
+
+  static float exp(float x)
+  {
+    return std::exp(x);
+  }
+
+  static float log(float x)
+  {
+    return std::log(x);
+  }
+
 };
 
 }
