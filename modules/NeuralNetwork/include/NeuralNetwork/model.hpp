@@ -17,11 +17,12 @@ namespace ml
 {
 namespace neuralnetwork
 {
-
+namespace model
+{
 namespace internal
 {
 
-template <
+template<
     typename InputLayer,
     typename HiddenLayers,
     typename OutputLayer
@@ -33,7 +34,7 @@ struct traits
 };
 
 } // namespace internal
-
+} // namespace model
 template<
     typename InputLayer,
     typename HiddenLayers,
@@ -44,7 +45,7 @@ class Model
 {
   template <typename T>
   using sequence_type = std::vector<T>;
-  using traits = internal::traits<InputLayer, HiddenLayers, OutputLayer>;
+  using traits = model::internal::traits<InputLayer, HiddenLayers, OutputLayer>;
   using input_type = typename traits::input_type;
   using output_type = typename traits::output_type;
   using scalar = float;
