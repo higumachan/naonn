@@ -5,6 +5,7 @@
 #ifndef NAONN_MODEL_HPP
 #define NAONN_MODEL_HPP
 
+#include <algorithm>
 #include <vector>
 #include <functional>
 #include <numeric>
