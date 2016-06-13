@@ -19,7 +19,7 @@ public:
     return Operator::apply(left.get_value(), right.get_value());
   }
 
-  template <int ID> Operator::result_of_grad get_grad(const Variable<float, ID> &target) const {
+  template <int ID> Operator::result_of_grad get_grad(const variable::Variable<float, ID> &target) const {
     return Operator::grad(target, left, right);
   }
 };
