@@ -57,8 +57,8 @@ public:
   sequence_type<output_type> predict(const sequence_type<input_type>& inputs) const
   {
     sequence_type<output_type> result;
-
-    std::transform(inputs.begin(), inputs.end(), result.begin(), predict);
+    result.reserve(inputs.size());
+    std::transform(inputs.begin(), inputs.end(), std::back_inserter(result), predict);
 
     return result;
   }
