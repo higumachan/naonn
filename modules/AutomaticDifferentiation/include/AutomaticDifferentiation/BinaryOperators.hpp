@@ -22,7 +22,7 @@ template <typename Derived, typename InputTypeLeft, typename InputTypeRight, typ
   }
 
   template <typename Left, typename Right, typename TargetType, int ID>
-  static OutputType grad(const Variable<TargetType, ID> &target, const Left &left,
+  static OutputType grad(const variable::Variable<TargetType, ID> &target, const Left &left,
       const Right &right) {
     return (Derived::grad_detail_left(left.get_value(), right.get_value()) *
         left.get_grad(target) +
