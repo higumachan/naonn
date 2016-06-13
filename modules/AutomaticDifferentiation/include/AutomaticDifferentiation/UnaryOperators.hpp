@@ -58,8 +58,8 @@ template<
     typename Type,
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
-struct nagate
-    : public ApplyUnaryFunctionBase<nagate<Type, TypeHelper>, Type, Type>
+struct negate
+    : public ApplyUnaryFunctionBase<negate<Type, TypeHelper>, Type, Type>
 {
   static Type apply_detail(const Type& x)
   { return -x; }
@@ -172,7 +172,7 @@ expressions::UnaryExpressions<OPERATOR_TYPE, Operand> OPERATOR_NAME(const Operan
 
 //}}}
 
-DEFINE_UNARY_OPERATORS(operator-, basics::nagate)
+DEFINE_UNARY_OPERATORS(operator-, basics::negate)
 
 DEFINE_UNARY_OPERATORS(sin, basics::sin)
 
