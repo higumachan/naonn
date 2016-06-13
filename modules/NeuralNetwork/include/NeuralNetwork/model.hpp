@@ -5,6 +5,7 @@
 #ifndef NAONN_MODEL_HPP
 #define NAONN_MODEL_HPP
 
+#include <algorithm>
 #include <vector>
 #include <functional>
 #include <numeric>
@@ -16,11 +17,12 @@ namespace ml
 {
 namespace neuralnetwork
 {
-
+namespace model
+{
 namespace internal
 {
 
-template <
+template<
     typename InputLayer,
     typename HiddenLayers,
     typename OutputLayer
@@ -32,7 +34,7 @@ struct traits
 };
 
 } // namespace internal
-
+} // namespace model
 template<
     typename InputLayer,
     typename HiddenLayers,
@@ -43,30 +45,27 @@ class Model
 {
   template <typename T>
   using sequence_type = std::vector<T>;
-  using traits = internal::traits<InputLayer, HiddenLayers, OutputLayer>;
+  using traits = model::internal::traits<InputLayer, HiddenLayers, OutputLayer>;
+  using input_type = typename traits::input_type;
+  using output_type = typename traits::output_type;
   using scalar = float;
-  using objective_function_type = std::binary_function<
-      const traits::output_type&,
-      const traits::output_type&,
-      scalar
-  >;
-
+  using objective_function_type = std::function<scalar(const output_type&, const output_type&)>;
 public:
-  traits::output_type predict(const traits::input_type& input) const
+  output_type predict(const input_type& input) const
   {
     return output_layer(hidden_layers(input_layer(input)));
   }
-  sequence_type<traits::output_type> predict(const sequence_type<traits::input_type>& inputs) const
+  sequence_type<output_type> predict(const sequence_type<input_type>& inputs) const
   {
-    sequence_type<traits::output_type> result;
-
-    std::transform(inputs.begin(), inputs.end(), result.begin(), predict);
+    sequence_type<output_type> result;
+    result.reserve(inputs.size());
+    std::transform(inputs.begin(), inputs.end(), std::back_inserter(result), predict);
 
     return result;
   }
   void fit(
-      const sequence_type<traits::input_type>& inputs,
-      const sequence_type<traits::output_type>& trains,
+      const sequence_type<input_type>& inputs,
+      const sequence_type<output_type>& trains,
       std::size_t epoch,
       std::size_t batch_size=32
   )
@@ -76,8 +75,8 @@ public:
     sequence_type<size_t> indices(inputs.size());
     std::iota(indices.begin(), indices.end(), 0);
 
-    sequence_type<const traits::input_type&> inputs_on_batch(inputs.size());
-    sequence_type<const traits::output_type&> trains_on_batch(trains.size());
+    sequence_type<const input_type&> inputs_on_batch(inputs.size());
+    sequence_type<const output_type&> trains_on_batch(trains.size());
 
     for (int i = 0; i < epoch; i++){
       std::shuffle(indices.begin(), indices.end(), rng);
@@ -86,15 +85,15 @@ public:
           inputs_on_batch[j] = inputs[indices[batch_no * batch_size + j]];
           trains_on_batch[j] = trains[indices[batch_no * batch_size + j]];
         }
-        fit_on_batch(inputs_on_batch, trains_on_batch);
+        fit_on_batch(inputs_on_batch, trains_on_batch, batch_size);
       }
     }
   }
 
 private:
   void fit_on_batch(
-      const sequence_type<const traits::input_type>& inputs,
-      const sequence_type<const traits::output_type>& trains,
+      const sequence_type<const input_type&>& inputs,
+      const sequence_type<const output_type&>& trains,
       std::size_t batch_size
   )
   {
