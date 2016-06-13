@@ -91,8 +91,8 @@ public:
 
 private:
   void fit_on_batch(
-      const sequence_type<const input_type>& inputs,
-      const sequence_type<const output_type>& trains,
+      const sequence_type<const input_type&>& inputs,
+      const sequence_type<const output_type&>& trains,
       std::size_t batch_size
   )
   {
