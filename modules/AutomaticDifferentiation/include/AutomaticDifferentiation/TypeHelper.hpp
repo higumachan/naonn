@@ -19,12 +19,15 @@ namespace type_helper
 template<typename Type>
 struct TypeHelper
 {
+  using type = Type;
 
 };
 
 template<>
 struct TypeHelper<float>
 {
+  using type = float;
+
   static float zero()
   {
     return 0.0f;
@@ -33,6 +36,11 @@ struct TypeHelper<float>
   static float one()
   {
     return 1.0f;
+  }
+
+  static float negate(float x)
+  {
+    return -x;
   }
 
   static float sin(float x)
@@ -55,6 +63,41 @@ struct TypeHelper<float>
     return std::log(x);
   }
 
+  template<typename T>
+  static float plus(float x, const T& y)
+  {
+    return x + y;
+  }
+
+  template<typename T>
+  static float minus(float x, const T& y)
+  {
+    return x - y;
+  }
+
+  template<typename T>
+  static float multiple(float x, const T& y)
+  {
+    return x * y;
+  }
+
+  template <typename T>
+  static float divide(float x, const T& y)
+  {
+    return x / y;
+  }
+
+  template <typename T>
+  static float max(float x, const T& y)
+  {
+    return x > y ? x : static_cast<float>(y);
+  }
+
+  template <typename T>
+  static float min(float x, const T& y)
+  {
+    return x < y ? x : static_cast<float>(y);
+  }
 };
 
 }
