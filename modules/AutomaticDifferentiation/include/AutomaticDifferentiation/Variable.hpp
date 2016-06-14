@@ -37,8 +37,7 @@ template<
 >
 class Variable
     : expressions::BaseExpression<
-        Variable<Type, ID, TypeHelper>,
-        Type, Type
+        Variable<Type, ID, TypeHelper>
     >
 {
 public:

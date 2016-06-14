@@ -5,6 +5,8 @@
 #ifndef NAONN_BASEEXPRESSION_HPP
 #define NAONN_BASEEXPRESSION_HPP
 
+#include "Variable.hpp"
+
 namespace nyao
 {
 namespace differentiation
@@ -14,11 +16,7 @@ namespace automatic
 namespace expressions
 {
 
-template<
-    typename Derived,
-    typename ValueType,
-    typename GradType
->
+template<typename Derived>
 class BaseExpression
 {
   Derived& derived()
@@ -27,21 +25,20 @@ class BaseExpression
   const Derived& derived() const
   { return static_cast<Derived&>(*this); }
 
-  using value_type = ValueType;
-  using grad_type = GradType;
-
-  value_type get_value()
+  template <typename ValueType>
+  ValueType get_value()
   {
     return derived().get_value();
   }
 
-  grad_type get_grad(const Derived& target)
+  template <typename GradType>
+  GradType get_grad(const Derived& target)
   {
     return derived().get_grad(target);
   }
 
-  template<typename TargetType>
-  grad_type get_grad(const TargetType& target)
+  template <typename TargetType, typename GradType>
+  GradType get_grad(const TargetType& target)
   {
     return derived().get_grad(target);
   };
