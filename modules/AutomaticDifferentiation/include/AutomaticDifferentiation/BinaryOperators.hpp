@@ -165,7 +165,10 @@ expressions::BinaryExpressions< \
   expressions::BaseExpressions<Left>, \
   OPERATOR_TYPE,  \
   expressions::BaseExpressions<Right> \
-> OPERATOR_NAME(const Left& left, const Right& right) \
+> OPERATOR_NAME( \
+    const expressions::BaseExpressions<Left>& left, \
+    const expressions::BaseExpressions<Right>& right \
+  ) \
 { \
   expressions::BinaryExpressions< \
     expressions::BaseExpressions<Left>, \
@@ -182,7 +185,7 @@ expressions::BinaryExpressions< \
   expressions::BaseExpressions<Left>, \
   OPERATOR_TYPE, \
   variable::ConstVariable<Type>\
-> OPERATOR_NAME(const Left& left, const Type& right) \
+> OPERATOR_NAME(const expressions::BaseExpressions<Left>& left, const Type& right) \
 { \
   expressions::BinaryExpressions< \
     expressions::BaseExpressions<Left>, \
@@ -199,7 +202,7 @@ expressions::BinaryExpressions< \
   variable::ConstVariable<Type>, \
   OPERATOR_TYPE, \
   expressions::BaseExpressions<Right>\
-> OPERATOR_NAME(const Type& left, const Right& right) \
+> OPERATOR_NAME(const Type& left, const expressions::BaseExpressions<Right>& right) \
 { \
   expressions::BinaryExpressions<\
     variable::ConstVariable<Type>, \
