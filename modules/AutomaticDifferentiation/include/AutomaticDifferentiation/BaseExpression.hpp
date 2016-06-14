@@ -14,7 +14,11 @@ namespace automatic
 namespace expressions
 {
 
-template<typename Derived>
+template<
+    typename Derived,
+    typename ValueType,
+    typename GradType
+>
 class BaseExpression
 {
   Derived& derived()
@@ -23,18 +27,21 @@ class BaseExpression
   const Derived& derived() const
   { return static_cast<Derived&>(*this); }
 
-  Derived::vale_type get_value()
+  using value_type = ValueType;
+  using grad_type = GradType;
+
+  value_type get_value()
   {
     return derived().get_value();
   }
 
-  Derived::grad_type get_grad(const Derived& target)
+  grad_type get_grad(const Derived& target)
   {
     return derived().get_grad(target);
   }
 
-  template<typename TargetType, int OTHER_ID>
-  Derived::grad_type get_grad(const variable::Variable <TargetType, OTHER_ID>& target)
+  template<typename TargetType>
+  grad_type get_grad(const TargetType& target)
   {
     return derived().get_grad(target);
   };

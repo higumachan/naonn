@@ -1,6 +1,22 @@
 #ifndef NAONN_VARIABLE_HPP
 #define NAONN_VARIABLE_HPP
 
+namespace nyao
+{
+namespace differentiation
+{
+namespace automatic
+{
+namespace variable
+{
+
+using id_type = int;
+
+}
+}
+}
+}
+
 #include "BaseExpression.hpp"
 #include "TypeHelper.hpp"
 
@@ -13,16 +29,20 @@ namespace automatic
 namespace variable
 {
 
+
 template<
     typename Type,
-    int ID,
+    id_type ID,
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
 class Variable
-    : BaseExpression<Variable<Type, ID, TypeHelper>>
+    : expressions::BaseExpression<
+        Variable<Type, ID, TypeHelper>,
+        Type, Type
+    >
 {
 public:
-  static const int id = ID;
+  static constexpr id_type id = ID;
 
   using value_type = Type;
   using grad_type = Type;
@@ -39,13 +59,13 @@ public:
 
   grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
   {
-    return TypeHelper::one;
+    return TypeHelper::one();
   }
 
-  template<typename OtherType, int OTHER_ID, typename OtherTypeHelper>
+  template<typename OtherType, id_type OTHER_ID, typename OtherTypeHelper>
   grad_type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>&) const
   {
-    return (TypeHelper::zero);
+    return (TypeHelper::zero());
   }
 
 private:
@@ -69,7 +89,7 @@ public:
       : Variable<Type, CONST_VARIABLE_ID, TypeHelper>(_value)
   { }
 
-  template<typename OtherType, int OTHER_ID, typename OtherTypeHelper>
+  template<typename OtherType, id_type OTHER_ID, typename OtherTypeHelper>
   Type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>&) const
   {
     return TypeHelper::zero;
@@ -79,9 +99,13 @@ private:
   Type value;
 };
 
+
 }
 }
 }
 }
+
+
+#define NYAO_NN_VARIABLE(type) nyao::differentiation::automatic::variable::Variable<type, __COUNTER__>
 
 #endif
