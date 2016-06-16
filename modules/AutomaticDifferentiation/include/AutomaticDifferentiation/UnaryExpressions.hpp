@@ -16,6 +16,8 @@ namespace automatic
 namespace expressions
 {
 
+namespace impl
+{
 template<typename Operator, typename Operand>
 class UnaryExpression
 {
@@ -35,11 +37,15 @@ public:
   }
 
   template<typename TargetType, int ID>
-  grad_type grad(const variable::Variable<TargetType, ID>& target) const
+  grad_type get_grad(const variable::Variable <TargetType, ID>& target) const
   {
     return Operator::grad(target, operand);
   }
 };
+} // impl
+
+template<typename Operator, typename Operand>
+using UnaryExpression = Expression<impl::UnaryExpression<Operator, Operand>>;
 
 
 }

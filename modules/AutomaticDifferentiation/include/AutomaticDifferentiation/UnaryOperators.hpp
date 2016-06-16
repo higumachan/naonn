@@ -14,39 +14,36 @@ namespace automatic
 namespace operators
 {
 
-//{{{ ApplyUnaryFunctionBase
 template<
-    typename Derived,
-    typename InputType,
-    typename OutputType
+    template<typename>
+    class UnaryOperator,
+    typename Operand
 >
-struct ApplyUnaryFunctionBase
+struct ApplyUnaryOperator
 {
-  Derived& derived()
-  { return static_cast<Derived&>(*this); }
+  using unary_operator = UnaryOperator<
+      typename Operand::value_type
+  >;
+  using result_of_apply = typename unary_operator::result_of_apply;
+  using result_of_grad = typename unary_operator::result_of_grad;
 
-  const Derived& derived() const
-  { return static_cast<Derived&>(*this); }
-
-
-  static OutputType apply(const InputType& operand)
+  static result_of_apply apply(const Operand& operand)
   {
-    return Derived::apply_detail(operand);
+    return unary_operator::apply(operand.get_value());
   }
+
 
   template<typename TargetType, int ID>
-  static OutputType grad(const variable::Variable<TargetType, ID>& target, const InputType& operand)
+  static result_of_grad grad(
+      const variable::Variable<TargetType, ID>& target,
+      const Operand& operand
+  )
   {
-    return Derived::grad_detail(operand.get_value()) * operand.get_grad(target);
+    return (unary_operator::grad(operand.get_value()) * operand.get_grad(target)
+    );
   }
-
-  using result_of_apply = typename std::result_of<decltype(apply)>::type;
-  using result_of_grad = typename std::result_of<decltype(grad)>::type;
-
-  static OutputType grad_detail(const InputType& x);
-
-  static OutputType apply_detail(const InputType& x);
 };
+
 
 //}}}
 
@@ -54,120 +51,136 @@ namespace basics
 {
 //{{{ basic unary operators
 
+template<typename Type>
+struct UnaryOperatorBase
+{
+  using type_helper = type_helper::TypeHelper<Type>;
+
+  template<typename Output>
+  static Output apply(const Type&);
+
+  template<typename Output>
+  static Output grad(const Type&);
+
+  using result_of_apply = Type;
+
+  using result_of_grad = Type;
+};
+
 template<
-    typename Type,
-    typename TypeHelper=type_helper::TypeHelper<Type>
+    typename Type
 >
 struct negate
-    : public ApplyUnaryFunctionBase<negate<Type, TypeHelper>, Type, Type>
+    : public UnaryOperatorBase<Type>
 {
-  static Type apply_detail(const Type& x)
-  { return -x; }
+  using type_helper = type_helper::TypeHelper<Type>;
 
-  static Type grad_detail(const Type& x)
-  { return -TypeHelper::one; }
+  static Type apply(const Type& x)
+  {
+    return -x;
+  }
+
+  static Type grad(const Type& x)
+  {
+    return -1;
+  }
 };
 
 template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
+    typename Type
 >
 struct sin
-    : public ApplyUnaryFunctionBase<sin<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
+    : public UnaryOperatorBase<Type>
 {
-  static OutputType apply_detail(const InputType& x)
-  { return InputTypeHelper::sin(x); }
+  using type_helper = type_helper::TypeHelper<Type>;
 
-  static OutputType grad_detail(const InputType& x)
-  { return InputTypeHelper::cos(x); }
+  static Type apply(const Type& x)
+  {
+    return type_helper::sin(x);
+  }
+
+  static Type grad(const Type& x)
+  {
+    return type_helper::cos(x);
+  }
+
+  using result_of_apply = Type;
+  using result_of_grad = Type;
 };
 
 template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
+    typename Type
 >
 struct cos
-    : public ApplyUnaryFunctionBase<cos<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
+    : public UnaryOperatorBase<Type>
 {
-  static OutputType apply_detail(const InputType& x)
-  { return InputTypeHelper::cos(x); }
+  using type_helper = type_helper::TypeHelper<Type>;
 
-  static OutputType grad_detail(const InputType& x)
-  { return -InputTypeHelper::sin(x); }
+  static Type apply(const Type& x)
+  {
+    return type_helper::cos(x);
+  }
+
+  static Type grad(const Type& x)
+  {
+    return -type_helper::sin(x);
+  }
 };
 
 template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
+    typename Type
 >
 struct exp
-    : public ApplyUnaryFunctionBase<exp<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
+    : public UnaryOperatorBase<Type>
 {
-  static OutputType apply_detail(const InputType& x)
-  { return InputTypeHelper::exp(x); }
+  using type_helper = type_helper::TypeHelper<Type>;
 
-  static OutputType grad_detail(const InputType& x)
-  { return InputTypeHelper::exp(x); }
+  static Type apply(const Type& x)
+  { return type_helper::exp(x); }
+
+  static Type grad(const Type& x)
+  { return type_helper::exp(x); }
 };
 
 template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
+    typename Type
 >
 struct log
-    : public ApplyUnaryFunctionBase<log<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
+    : public UnaryOperatorBase<Type>
 {
-  static OutputType apply_detail(const InputType& x)
-  { return InputTypeHelper::log(x); }
+  using type_helper = type_helper::TypeHelper<Type>;
 
-  static OutputType grad_detail(const InputType& x)
+  static Type apply(const Type& x)
+  { return type_helper::log(x); }
+
+  static Type grad(const Type& x)
   { return 1 / x; }
-};
-
-template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
->
-struct max0
-    : public ApplyUnaryFunctionBase<max0<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
-{
-  static OutputType apply_detail(const InputType& x)
-  { return x > InputTypeHelper::zero ? x : 0; }
-
-  static OutputType grad_detail(const InputType& x)
-  { return x > InputTypeHelper::zero ? 1 : 0; }
-};
-
-template<
-    typename InputType,
-    typename OutputType,
-    typename InputTypeHelper=type_helper::TypeHelper<InputType>
->
-struct min0
-    : public ApplyUnaryFunctionBase<min0<InputType, OutputType, InputTypeHelper>, InputType, OutputType>
-{
-  static OutputType apply_detail(const InputType& x)
-  { return x < InputTypeHelper::zero ? x : 0; }
-
-  static OutputType grad_detail(const InputType& x)
-  { return x < InputTypeHelper::zero ? 1 : 0; }
 };
 
 //}}}
 } // namespace basics
 
+namespace inner
+{
+
+template<
+    template<typename> class Operator,
+    typename Operand
+>
+using UnaryExpression = expressions::UnaryExpression<
+    ApplyUnaryOperator<Operator, Operand>,
+    expressions::Expression<Operand>
+>;
+} // inner
+
 // {{{ DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE)
-#define DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE) template< \
-  template Operand \
+#define DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR)\
+template< \
+  typename Operand \
 > \
-expressions::UnaryExpressions<OPERATOR_TYPE, Operand> OPERATOR_NAME(const Operand& operand) \
+inner::UnaryExpression<OPERATOR, Operand> OPERATOR_NAME(const expressions::Expression<Operand>& operand) \
 { \
-  return expressions::BinaryExpressions<OPERATOR_TYPE, Operand>(operand); \
+  return inner::UnaryExpression<OPERATOR, Operand>(operand); \
 } \
 
 //}}}
@@ -181,10 +194,6 @@ DEFINE_UNARY_OPERATORS(cos, basics::cos)
 DEFINE_UNARY_OPERATORS(exp, basics::exp)
 
 DEFINE_UNARY_OPERATORS(log, basics::log)
-
-DEFINE_UNARY_OPERATORS(max0, basics::max0)
-
-DEFINE_UNARY_OPERATORS(min0, basics::min0)
 
 
 }
