@@ -4,6 +4,7 @@
 
 #include <AutomaticDifferentiation/Variable.hpp>
 #include <AutomaticDifferentiation/BinaryOperators.hpp>
+#include <AutomaticDifferentiation/UnaryOperators.hpp>
 #include <type_traits>
 #include <gtest/gtest.h>
 
@@ -159,5 +160,21 @@ TEST(basic_grad, Min)
   ASSERT_FLOAT_EQ(t3.get_grad(k), 0.0f);
   ASSERT_FLOAT_EQ(t4.get_value(), 10.0f);
   ASSERT_FLOAT_EQ(t4.get_grad(t), 1.0f);
+}
+
+TEST(basic_grad, Negate)
+{
+   NYAO_NN_VARIABLE(float) t(10.0f);
+   NYAO_NN_VARIABLE(float) k(-20.0f);
+
+  auto t2 = operators::operator-(t);
+  auto t3 = operators::operator-(k);
+
+  ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
+  std::cout << t2.get_value() << std::endl;
+  ASSERT_FLOAT_EQ(t2.get_value(), -10.0f);
+  ASSERT_FLOAT_EQ(t2.get_grad(t), -1.0f);
+  ASSERT_FLOAT_EQ(t3.get_value(), 20.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(k), -1.0f);
 }
 
