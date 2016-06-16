@@ -133,7 +133,6 @@ template<
 struct max
     : public BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
-  static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "max operator is require same type left and right");
 
   using type_helper = type_helper::TypeHelper<InputTypeLeft>;
   using output_type = InputTypeLeft;
@@ -153,8 +152,8 @@ struct max
     return x < y ? type_helper::one() : type_helper::zero();
   }
 
-  using result_of_apply = typename std::result_of<decltype(apply)>::type;
-  using result_of_grad = typename std::result_of<decltype(grad_left)>::type;
+  using result_of_apply = InputTypeLeft;
+  using result_of_grad = InputTypeLeft;
 };
 
 template<typename InputTypeLeft, typename InputTypeRight>
@@ -172,16 +171,16 @@ struct min
 
   static InputTypeLeft grad_left(const InputTypeLeft& x, const InputTypeRight& y)
   {
-    return x < y ? type_helper::one : type_helper::zero;
+    return x < y ? type_helper::one() : type_helper::zero();
   }
 
   static InputTypeLeft grad_right(const InputTypeLeft& x, const InputTypeRight& y)
   {
-    return x > y ? type_helper::one : type_helper::zero;
+    return x > y ? type_helper::one() : type_helper::zero();
   }
 
-  using result_of_apply = typename std::result_of<decltype(apply)>::type;
-  using result_of_grad = typename std::result_of<decltype(grad_left)>::type;
+  using result_of_apply = InputTypeLeft;
+  using result_of_grad = InputTypeRight;
 };
 
 

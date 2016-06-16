@@ -96,6 +96,68 @@ TEST(basic_grad, Plus)
   ASSERT_FLOAT_EQ(tl.get_grad(t), 2);
   ASSERT_FLOAT_EQ(t4.get_value(), 20);
   ASSERT_FLOAT_EQ(t4.get_grad(t), 2);
+}
 
+TEST(basic_grad, Multi)
+{
+   NYAO_NN_VARIABLE(float) t(10.0f);
+   NYAO_NN_VARIABLE(float) k(20.0f);
+
+  std::cout << t.get_value() << std::endl;
+
+  auto t2 = t * 2.0f;
+  auto t3 = t * t;
+  auto t4 = t * k;
+
+  ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t2.get_value(), 20.0f);
+  ASSERT_FLOAT_EQ(t2.get_grad(t), 2.0f);
+  ASSERT_FLOAT_EQ(t3.get_value(), 100.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(t), 20.0f);
+  ASSERT_FLOAT_EQ(t4.get_value(), 200.0f);
+  ASSERT_FLOAT_EQ(t4.get_grad(t), 20.0f);
+  ASSERT_FLOAT_EQ(t4.get_grad(k), 10.0f);
+}
+
+TEST(basic_grad, Max)
+{
+   NYAO_NN_VARIABLE(float) t(10.0f);
+   NYAO_NN_VARIABLE(float) k(20.0f);
+
+  std::cout << t.get_value() << std::endl;
+
+  auto t2 = operators::max(t, 2.0f);
+  auto t3 = operators::max(t, k);
+  auto t4 = operators::max(t, 100.0f);
+
+  ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t2.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t2.get_grad(t), 1.0f);
+  ASSERT_FLOAT_EQ(t3.get_value(), 20.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(t), 0.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(k), 1.0f);
+  ASSERT_FLOAT_EQ(t4.get_value(), 100.0f);
+  ASSERT_FLOAT_EQ(t4.get_grad(t), 0.0f);
+}
+
+TEST(basic_grad, Min)
+{
+   NYAO_NN_VARIABLE(float) t(10.0f);
+   NYAO_NN_VARIABLE(float) k(20.0f);
+
+  std::cout << t.get_value() << std::endl;
+
+  auto t2 = operators::min(t, 2.0f);
+  auto t3 = operators::min(t, k);
+  auto t4 = operators::min(t, 100.0f);
+
+  ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t2.get_value(), 2.0f);
+  ASSERT_FLOAT_EQ(t2.get_grad(t), 0.0f);
+  ASSERT_FLOAT_EQ(t3.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(t), 1.0f);
+  ASSERT_FLOAT_EQ(t3.get_grad(k), 0.0f);
+  ASSERT_FLOAT_EQ(t4.get_value(), 10.0f);
+  ASSERT_FLOAT_EQ(t4.get_grad(t), 1.0f);
 }
 
