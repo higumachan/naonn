@@ -7,6 +7,7 @@
 #include <AutomaticDifferentiation/UnaryOperators.hpp>
 #include <type_traits>
 #include <gtest/gtest.h>
+#include <cmath>
 
 TEST(basic_grad, Variable)
 {
@@ -167,8 +168,8 @@ TEST(basic_grad, Negate)
    NYAO_NN_VARIABLE(float) t(10.0f);
    NYAO_NN_VARIABLE(float) k(-20.0f);
 
-  auto t2 = operators::operator-(t);
-  auto t3 = operators::operator-(k);
+  auto t2 = -t;
+  auto t3 = -k;
 
   ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
   std::cout << t2.get_value() << std::endl;
@@ -176,5 +177,30 @@ TEST(basic_grad, Negate)
   ASSERT_FLOAT_EQ(t2.get_grad(t), -1.0f);
   ASSERT_FLOAT_EQ(t3.get_value(), 20.0f);
   ASSERT_FLOAT_EQ(t3.get_grad(k), -1.0f);
+}
+
+TEST(basic_grad, SinCos)
+{
+   NYAO_NN_VARIABLE(float) t(M_PI / 2.0f);
+
+  auto t2 = operators::sin(t);
+  auto t3 = operators::cos(t);
+  float eps = 1e-6;
+
+  ASSERT_FLOAT_EQ(t2.get_value(), 1);
+  ASSERT_LT(t2.get_grad(t), eps);
+  ASSERT_LT(t3.get_value(), eps);
+  ASSERT_FLOAT_EQ(t3.get_grad(t), -1);
+}
+
+TEST(basic_grad, Exp)
+{
+   NYAO_NN_VARIABLE(float) t(1);
+
+  auto t2 = operators::exp(t);
+  float eps = 1e-6;
+
+  ASSERT_FLOAT_EQ(t2.get_value(), exp(1));
+  ASSERT_FLOAT_EQ(t2.get_grad(t), exp(1));
 }
 
