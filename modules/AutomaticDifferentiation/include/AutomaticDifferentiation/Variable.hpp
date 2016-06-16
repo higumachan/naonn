@@ -17,7 +17,7 @@ using id_type = int;
 }
 }
 
-#include "BaseExpression.hpp"
+#include "Expression.hpp"
 #include "TypeHelper.hpp"
 
 namespace nyao
@@ -29,6 +29,8 @@ namespace automatic
 namespace variable
 {
 
+namespace impl
+{
 
 template<
     typename Type,
@@ -36,9 +38,6 @@ template<
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
 class Variable
-    : expressions::BaseExpression<
-        Variable<Type, ID, TypeHelper>
-    >
 {
 public:
   static constexpr id_type id = ID;
@@ -76,28 +75,50 @@ namespace
 const int CONST_VARIABLE_ID = -1;
 }
 
+
 template<
     typename Type,
     typename TypeHelper=type_helper::TypeHelper<Type>
 >
-class ConstVariable
-    : public Variable<Type, CONST_VARIABLE_ID, TypeHelper>
+struct ConstVariable
 {
-public:
-  ConstVariable(const Type& _value)
-      : Variable<Type, CONST_VARIABLE_ID, TypeHelper>(_value)
-  { }
+  using value_type = Type;
+  using grad_type = Type;
 
-  template<typename OtherType, id_type OTHER_ID, typename OtherTypeHelper>
-  Type get_grad(const Variable<OtherType, OTHER_ID, OtherTypeHelper>&) const
+  static_assert(!std::is_reference<value_type>::value, "reference");
+
+  ConstVariable(const Type& _value)
   {
-    return TypeHelper::zero;
+    value = _value;
+  }
+
+  value_type get_value() const
+  { return value; }
+
+  template<int ID>
+  grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
+  {
+    return TypeHelper::zero();
   }
 
 private:
-  Type value;
+  value_type value;
 };
 
+} //impl
+
+template<
+    typename Type,
+    id_type ID,
+    typename TypeHelper=type_helper::TypeHelper<Type>
+>
+using Variable = expressions::Expression<impl::Variable<Type, ID, TypeHelper>>;
+
+template<
+    typename Type,
+    typename TypeHelper=type_helper::TypeHelper<Type>
+>
+using ConstVariable = expressions::Expression<impl::ConstVariable<Type, TypeHelper>>;
 
 }
 }

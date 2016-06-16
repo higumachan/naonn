@@ -18,7 +18,6 @@ namespace expressions
 
 template<typename Operator, typename Operand>
 class UnaryExpression
-    : public BaseExpression<UnaryExpression<Operator, Operand>>
 {
   Operand operand;
 
