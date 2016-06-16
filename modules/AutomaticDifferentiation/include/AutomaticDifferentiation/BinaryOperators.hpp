@@ -107,179 +107,87 @@ struct plus
 
 };
 
-} // basics
-
-
-//{{{ ApplyBinaryFunctionBase
-#if false
-template<
-    typename Derived
->
-struct ApplyBinaryFunctionBase
+template<typename InputTypeLeft, typename InputTypeRight>
+struct multiply : BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
-  Derived& derived()
-  { return static_cast<Derived&>(*this); }
+  using type_helper = type_helper::TypeHelper<InputTypeLeft>;
+  using result_of_apply = decltype(type_helper::multiply( std::declval<InputTypeLeft>(), std::declval<InputTypeRight>()));
 
-  const Derived derived() const
-  { return static_cast<Derived&>(*this); }
+  static result_of_apply apply(const InputTypeLeft& x, const InputTypeRight& y)
+  { return type_helper::multiply(x, y); }
 
-  /*
-  using result_of_apply = typename std::result_of<decltype(Derived::apply_detail)>::type;
-  using result_of_grad = typename std::result_of<decltype(Derived::grad_detail)>::type;
-   */
+  static InputTypeRight grad_left(const InputTypeLeft&, const InputTypeRight& y)
+  { return y; }
 
-  template<typename InputTypeLeft, typename InputTypeRight>
-  static typename Derived::output_type apply(InputTypeLeft left, InputTypeRight right)
-  {
-    return Derived::apply_detail(left.get_value(), right.get_value());
-  }
+  static InputTypeLeft grad_right(const InputTypeLeft& x, const InputTypeRight&)
+  { return x; }
 
-  template<typename Left, typename Right, typename TargetType, typename OutputType, int ID>
-  static OutputType grad(
-      const variable::Variable<TargetType, ID>& target,
-      const Left& left,
-      const Right& right
-  )
-  {
-    return (Derived::grad_detail_left(left.get_value(), right.get_value()) *
-        left.get_grad(target) +
-        Derived::grad_detail_right(left.get_value(), right.get_value()) *
-            right.get_grad(target));
-  }
-
-
-  template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-  static OutputType apply_detail(const InputTypeLeft& x, const InputTypeRight& y);
-
-  template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-  static OutputType grad_detail(const InputTypeLeft& x, const InputTypeRight& y);
-
-  template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-  static OutputType grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
-  {
-    return Derived::grad_detail(x, y);
-  }
-
-  template<typename InputTypeLeft, typename InputTypeRight, typename OutputType>
-  static OutputType grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
-  {
-    return Derived::grad_detail(x, y);
-  }
-
+  using result_of_grad = InputTypeLeft;
 };
-// }}}
 
 
-namespace basics
-{
-// {{{ basic operators
 template<
     typename InputTypeLeft,
     typename InputTypeRight
 >
 struct max
-    : public ApplyBinaryFunctionBase<
-        max<InputTypeLeft, InputTypeRight>
-    >
+    : public BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
   static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "max operator is require same type left and right");
 
   using type_helper = type_helper::TypeHelper<InputTypeLeft>;
   using output_type = InputTypeLeft;
 
-  static InputTypeLeft apply_detail(const InputTypeLeft& x, const InputTypeLeft& y)
+  static InputTypeLeft apply(const InputTypeLeft& x, const InputTypeLeft& y)
   {
     return x > y ? x : y;
   }
 
-  static InputTypeLeft grad_detail_left(const InputTypeLeft& x, const InputTypeLeft& y)
+  static InputTypeLeft grad_left(const InputTypeLeft& x, const InputTypeLeft& y)
   {
     return x > y ? type_helper::one() : type_helper::zero();
   }
 
-  static InputTypeLeft grad_detail_right(const InputTypeLeft& x, const InputTypeLeft& y)
+  static InputTypeLeft grad_right(const InputTypeLeft& x, const InputTypeLeft& y)
   {
     return x < y ? type_helper::one() : type_helper::zero();
   }
 
-  using result_of_apply = typename std::result_of<decltype(apply_detail)>::type;
-  using result_of_grad = typename std::result_of<decltype(grad_detail_left)>::type;
+  using result_of_apply = typename std::result_of<decltype(apply)>::type;
+  using result_of_grad = typename std::result_of<decltype(grad_left)>::type;
 };
 
 template<typename InputTypeLeft, typename InputTypeRight>
 struct min
-    : public ApplyBinaryFunctionBase<
-        min<InputTypeLeft, InputTypeRight>
-    >
+    : public BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
   static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "min operator is require same type left and right");
 
   using type_helper = type_helper::TypeHelper<InputTypeLeft>;
 
-  static InputTypeLeft apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
+  static InputTypeLeft apply(const InputTypeLeft& x, const InputTypeRight& y)
   {
     return x < y ? x : y;
   }
 
-  static InputTypeLeft grad_detail_left(const InputTypeLeft& x, const InputTypeRight& y)
+  static InputTypeLeft grad_left(const InputTypeLeft& x, const InputTypeRight& y)
   {
     return x < y ? type_helper::one : type_helper::zero;
   }
 
-  static InputTypeLeft grad_detail_right(const InputTypeLeft& x, const InputTypeRight& y)
+  static InputTypeLeft grad_right(const InputTypeLeft& x, const InputTypeRight& y)
   {
     return x > y ? type_helper::one : type_helper::zero;
   }
 
-  using result_of_apply = typename std::result_of<decltype(apply_detail)>::type;
-  using result_of_grad = typename std::result_of<decltype(grad_detail_left)>::type;
+  using result_of_apply = typename std::result_of<decltype(apply)>::type;
+  using result_of_grad = typename std::result_of<decltype(grad_left)>::type;
 };
 
-template<typename InputTypeLeft, typename InputTypeRight>
-struct plus
-    : public ApplyBinaryFunctionBase<
-        plus<InputTypeLeft, InputTypeRight>
-    >
-{
-  static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "plus operator is require same type left and right");
 
-  using type_helper = type_helper::TypeHelper<InputTypeLeft>;
 
-  using result_of_apply = decltype(type_helper::multiply( std::declval<InputTypeLeft>(), std::declval<InputTypeRight>()));
-  static result_of_apply apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
-  { return type_helper::plus(x, y); }
 
-  static typename type_helper::type grad_detail(const InputTypeLeft&, const InputTypeRight&)
-  { return type_helper::one(); }
-
-  using result_of_grad = InputTypeLeft;
-};
-
-template<typename InputTypeLeft, typename InputTypeRight>
-struct multiply
-    : public ApplyBinaryFunctionBase<
-        multiply<InputTypeLeft, InputTypeRight>
-    >
-{
-  using type_helper = type_helper::TypeHelper<InputTypeLeft>;
-  using result_of_apply = decltype(type_helper::multiply( std::declval<InputTypeLeft>(), std::declval<InputTypeRight>()));
-
-  static result_of_apply
-  apply_detail(const InputTypeLeft& x, const InputTypeRight& y)
-  { return type_helper::multiply(x, y); }
-
-  static InputTypeRight grad_detail_left(const InputTypeLeft&, const InputTypeRight& y)
-  { return y; }
-
-  static InputTypeLeft grad_detail_right(const InputTypeLeft& x, const InputTypeRight&)
-  { return x; }
-
-  using result_of_grad = InputTypeLeft;
-};
-
-// }}}
-}
-#endif
+} // basics
 
 namespace inner {
 
@@ -328,7 +236,7 @@ using RightConstBinaryExpression = expressions::BinaryExpression<
     variable::ConstVariable<Type>
 >;
 
-}
+} // inner
 
 #define NYAONN_DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR) \
 template< typename Left, typename Right > \
@@ -359,13 +267,11 @@ OPERATOR_NAME(const Type& left, const expressions::Expression<Right>& right)\
 
 NYAONN_DEFINE_BINARY_OPERATORS(operator+, basics::plus)
 
-/*
-DEFINE_BINARY_OPERATORS(operator*, basics::multiply)
+NYAONN_DEFINE_BINARY_OPERATORS(operator*, basics::multiply)
 
-DEFINE_BINARY_OPERATORS(min, basics::min)
+NYAONN_DEFINE_BINARY_OPERATORS(min, basics::min)
 
-DEFINE_BINARY_OPERATORS(max, basics::max)
-*/
+NYAONN_DEFINE_BINARY_OPERATORS(max, basics::max)
 
 
 }
