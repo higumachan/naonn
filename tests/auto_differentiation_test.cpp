@@ -77,37 +77,6 @@ ApplyedBinaryExpression<Left, Right> func(
   return ApplyedBinaryExpression<Left, Right>(left, right);
 }
 
-/*
-template<
-  typename Type,
-  typename Right
->
-expressions::BinaryExpression<
-  variable::ConstVariable<Type>,
-  ApplyBinaryOperator<
-    basics::plus,
-    variable::ConstVariable<Type>,
-    Right
-  >,
-  Right
-> func(
-    const Type& left,
-    const expressions::BaseExpression<Right>& right
-  )
-{
-  return expressions::BinaryExpression<
-    variable::ConstVariable<Type>,
-    ApplyBinaryOperator<
-      basics::plus,
-      variable::ConstVariable<Type>,
-      Right
-    >,
-    Right
-  >(variable::ConstVariable<Type>(left), right.derived());
-}
- */
-
-
 TEST(basic_grad, Plus)
 {
    NYAO_NN_VARIABLE(float) t(10.0f);
