@@ -23,8 +23,8 @@ template<
 >
 class BinaryExpression
 {
-  Left left;
-  Right right;
+  const Left left;
+  const Right right;
 
 public:
   BinaryExpression(const Left& l, const Right& r)
