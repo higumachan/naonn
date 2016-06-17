@@ -107,9 +107,9 @@ TEST(basic_grad, Multi)
 
   std::cout << t.get_value() << std::endl;
 
-  auto t2 = t * 2.0f;
-  auto t3 = t * t;
-  auto t4 = t * k;
+  auto t2 = t * 2.0f;  //2t -> 2
+  auto t3 = t * t; //t^2 -> 2t
+  auto t4 = t * k; // (t * k)'t -> k
 
   ASSERT_FLOAT_EQ(t.get_value(), 10.0f);
   ASSERT_FLOAT_EQ(t2.get_value(), 20.0f);
@@ -204,3 +204,33 @@ TEST(basic_grad, Exp)
   ASSERT_FLOAT_EQ(t2.get_grad(t), exp(1));
 }
 
+TEST(basic_grad, ComplexMulti)
+{
+  NYAO_NN_VARIABLE(float) x(2);
+
+  auto t = x * x * x * x;  // x^4 -> 4x^3
+  ASSERT_FLOAT_EQ(t.get_value(), 16);
+  ASSERT_FLOAT_EQ(t.get_grad(x), 32);
+
+  NYAO_NN_VARIABLE(float) y(3);
+  auto t2 = t * exp(y); // x^4 * e^y
+
+  ASSERT_FLOAT_EQ(t2.get_value(), 16 * exp(3)); // == f(x=2, y=3): x^4 * e^y
+  ASSERT_FLOAT_EQ(t2.get_grad(x), 32 * exp(3)); // == f(x=2, y=3): (x^4 * e^y)'x = 4x^3 * e^y
+  ASSERT_FLOAT_EQ(t2.get_grad(y), 16 * exp(3)); // == f(x=2, y=3): (x^4 * e^y)'y = x^4 * e^y
+
+}
+
+TEST(basic_grad, SetValue)
+{
+  NYAO_NN_VARIABLE(float) x(2.0f);
+
+  auto t = x * x;
+
+  ASSERT_FLOAT_EQ(t.get_value(), 4.0f);
+  ASSERT_FLOAT_EQ(t.get_grad(x), 4.0f);
+
+  x.set_value(4.0f);
+  ASSERT_FLOAT_EQ(t.get_value(), 16.0f);
+  ASSERT_FLOAT_EQ(t.get_grad(x), 8.0f);
+}
