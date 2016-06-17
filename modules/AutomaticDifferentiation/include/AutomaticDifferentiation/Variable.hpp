@@ -46,14 +46,30 @@ public:
   using grad_type = Type;
 
   Variable(const Type& _value)
-      : value(_value)
-  { }
+  {
+    value = new Type;
+    *value = _value;
+    is_original = true;
+  }
+
+  Variable(const Variable<Type, ID, TypeHelper>& other)
+    : value(other.value)
+  {
+    is_original = false;
+  }
+
+  ~Variable()
+  {
+    if (is_original) {
+      delete value;
+    }
+  }
 
   void set_value(const Type& _value)
-  { value = _value; }
+  { *value = _value; }
 
   value_type get_value() const
-  { return value; }
+  { return *value; }
 
   grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
   {
@@ -67,7 +83,8 @@ public:
   }
 
 private:
-  value_type value;
+  value_type* value;
+  bool is_original = false;
 };
 
 namespace
