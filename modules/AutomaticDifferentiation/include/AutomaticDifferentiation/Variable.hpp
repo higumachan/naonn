@@ -1,21 +1,6 @@
 #ifndef NAONN_VARIABLE_HPP
 #define NAONN_VARIABLE_HPP
 
-namespace nyao
-{
-namespace differentiation
-{
-namespace automatic
-{
-namespace variable
-{
-
-using id_type = int;
-
-}
-}
-}
-}
 
 #include "Expression.hpp"
 #include "TypeHelper.hpp"
@@ -28,6 +13,8 @@ namespace automatic
 {
 namespace variable
 {
+
+using id_type = int;
 
 namespace impl
 {
