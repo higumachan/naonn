@@ -76,7 +76,7 @@ struct TypeHelper<float>
   }
 
   template<typename T>
-  static float multiple(float x, const T& y)
+  static float multiply(float x, const T& y)
   {
     return x * y;
   }
