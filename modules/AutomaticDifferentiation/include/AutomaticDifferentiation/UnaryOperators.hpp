@@ -39,8 +39,7 @@ struct ApplyUnaryOperator
       const Operand& operand
   )
   {
-    return (unary_operator::grad(operand.get_value()) * operand.get_grad(target)
-    );
+    return (unary_operator::grad(operand.get_value()) * operand.get_grad(target));
   }
 };
 
@@ -80,7 +79,7 @@ struct negate
     return -x;
   }
 
-  static Type grad(const Type& x)
+  static Type grad(const Type&)
   {
     return -1;
   }
