@@ -234,3 +234,18 @@ TEST(basic_grad, SetValue)
   ASSERT_FLOAT_EQ(t.get_value(), 16.0f);
   ASSERT_FLOAT_EQ(t.get_grad(x), 8.0f);
 }
+
+TEST(basic_grad, return_variable)
+{
+  auto func = [](){
+    NYAO_NN_VARIABLE(float) x(2.0);
+
+    return x;
+  };
+  auto x = func();
+  auto t = x * x;
+
+
+  ASSERT_FLOAT_EQ(t.get_value(), 4.0f);
+  ASSERT_FLOAT_EQ(t.get_grad(x), 4.0f);
+}
