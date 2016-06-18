@@ -160,7 +160,6 @@ template<typename InputTypeLeft, typename InputTypeRight>
 struct min
     : public BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
-  static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "min operator is require same type left and right");
 
   using type_helper = type_helper::TypeHelper<InputTypeLeft>;
 
