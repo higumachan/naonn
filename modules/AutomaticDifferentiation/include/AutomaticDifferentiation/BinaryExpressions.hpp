@@ -39,7 +39,7 @@ public:
     return Operator::apply(left, right);
   }
 
-  template<typename TargetType, int ID>
+  template<typename TargetType, variable::id_type ID>
   grad_type get_grad(const variable::Variable <TargetType, ID>& target) const
   {
     return Operator::grad(target, left, right);

@@ -33,7 +33,7 @@ struct ApplyUnaryOperator
   }
 
 
-  template<typename TargetType, int ID>
+  template<typename TargetType, variable::id_type ID>
   static result_of_grad grad(
       const variable::Variable<TargetType, ID>& target,
       const Operand& operand
