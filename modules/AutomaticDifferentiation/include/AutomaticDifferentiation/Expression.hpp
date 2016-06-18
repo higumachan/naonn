@@ -21,7 +21,7 @@ template<typename ExpressionImpl>
 struct Expression : public ExpressionImpl
 {
   template<typename... Args>
-  Expression(const Args&... args) : ExpressionImpl(args...) {}
+  Expression(Args... args) : ExpressionImpl(std::forward<Args>(args)...) {}
 
   using value_type = typename ExpressionImpl::value_type;
   using grad_type = typename ExpressionImpl::grad_type;
