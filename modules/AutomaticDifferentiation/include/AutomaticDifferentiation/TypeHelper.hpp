@@ -13,7 +13,7 @@ namespace differentiation
 {
 namespace automatic
 {
-namespace type_helpe
+namespace type_helper
 {
 
 template<typename Type>
