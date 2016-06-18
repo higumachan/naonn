@@ -237,7 +237,7 @@ using RightConstBinaryExpression = expressions::BinaryExpression<
 
 } // internal
 
-#define NYAONN_DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR) \
+#define NYAO_NN_DEFINE_BINARY_OPERATOR(OPERATOR_NAME, OPERATOR) \
 template< typename Left, typename Right > \
 nyao::differentiation::automatic::operators::internal::BinaryExpression<Left, OPERATOR, Right> \
 OPERATOR_NAME(const expressions::Expression<Left>& left, const expressions::Expression<Right>& right)\
@@ -264,13 +264,13 @@ OPERATOR_NAME(const Type& left, const expressions::Expression<Right>& right)\
 }\
 
 
-NYAONN_DEFINE_BINARY_OPERATORS(operator+, basics::plus)
+NYAO_NN_DEFINE_BINARY_OPERATOR(operator+, basics::plus)
 
-NYAONN_DEFINE_BINARY_OPERATORS(operator*, basics::multiply)
+NYAO_NN_DEFINE_BINARY_OPERATOR(operator*, basics::multiply)
 
-NYAONN_DEFINE_BINARY_OPERATORS(min, basics::min)
+NYAO_NN_DEFINE_BINARY_OPERATOR(min, basics::min)
 
-NYAONN_DEFINE_BINARY_OPERATORS(max, basics::max)
+NYAO_NN_DEFINE_BINARY_OPERATOR(max, basics::max)
 
 
 } // operators
