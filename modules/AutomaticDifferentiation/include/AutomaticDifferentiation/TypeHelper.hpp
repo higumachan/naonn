@@ -13,7 +13,7 @@ namespace differentiation
 {
 namespace automatic
 {
-namespace type_helper
+namespace type_helpe
 {
 
 template<typename Type>
@@ -100,9 +100,9 @@ struct TypeHelper<float>
   }
 };
 
-}
-}
-}
-}
+} // type_helper
+} // automatic
+} // differentiation
+} // nyao
 
 #endif //NAONN_VARIABLETYPEWRAPPER_HPP

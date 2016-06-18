@@ -47,11 +47,9 @@ public:
 template<typename Operator, typename Operand>
 using UnaryExpression = Expression<impl::UnaryExpression<Operator, Operand>>;
 
-
-}
-}
-}
-}
-
+} // expressions
+} // automatic
+} // differentiation
+} // nyao
 
 #endif //NAONN_UNARYEXPRESSIONS_HPP

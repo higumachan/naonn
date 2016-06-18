@@ -27,9 +27,10 @@ struct Expression : public ExpressionImpl
   using grad_type = typename ExpressionImpl::grad_type;
 };
 
-}
-}
-}
-}
+} // expressions
+} // automatic
+} // differentiation
+} // nyao
+
 
 #endif //NAONN_BASEEXPRESSION_HPP

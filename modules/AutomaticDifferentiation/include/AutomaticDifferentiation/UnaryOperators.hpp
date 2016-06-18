@@ -195,9 +195,9 @@ DEFINE_UNARY_OPERATORS(exp, basics::exp)
 DEFINE_UNARY_OPERATORS(log, basics::log)
 
 
-}
-}
-}
-}
+} // operators
+} // automatic
+} // differentiation
+} // nyao
 
 #endif

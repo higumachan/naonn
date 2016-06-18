@@ -54,9 +54,10 @@ template<
 >
 using BinaryExpression = Expression<impl::BinaryExpression<Left, Operator, Right>>;
 
-}
-}
-}
-}
+} // expressions
+} // automatic
+} // differentiation
+} // nyao
+
 
 #endif

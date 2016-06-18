@@ -273,9 +273,9 @@ NYAONN_DEFINE_BINARY_OPERATORS(min, basics::min)
 NYAONN_DEFINE_BINARY_OPERATORS(max, basics::max)
 
 
-}
-}
-}
-}
+} // operators
+} // automatic
+} // differentiation
+} // nyao
 
 #endif

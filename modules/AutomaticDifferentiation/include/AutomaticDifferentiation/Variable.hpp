@@ -124,10 +124,10 @@ template<
 >
 using ConstVariable = expressions::Expression<impl::ConstVariable<Type, TypeHelper>>;
 
-}
-}
-}
-}
+} // variable
+} // automatic
+} // differentiation
+} // nyao
 
 
 #define NYAO_NN_VARIABLE(type) nyao::differentiation::automatic::variable::Variable<type, __COUNTER__>
