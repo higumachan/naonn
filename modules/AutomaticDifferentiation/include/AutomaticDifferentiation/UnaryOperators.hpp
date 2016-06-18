@@ -159,7 +159,7 @@ struct log
 //}}}
 } // namespace basics
 
-namespace inner
+namespace internal
 {
 
 template<
@@ -170,16 +170,16 @@ using UnaryExpression = expressions::UnaryExpression<
     ApplyUnaryOperator<Operator, Operand>,
     expressions::Expression<Operand>
 >;
-} // inner
+} // internal
 
 // {{{ DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE)
 #define DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR)\
 template< \
   typename Operand \
 > \
-inner::UnaryExpression<OPERATOR, Operand> OPERATOR_NAME(const expressions::Expression<Operand>& operand) \
+internal::UnaryExpression<OPERATOR, Operand> OPERATOR_NAME(const expressions::Expression<Operand>& operand) \
 { \
-  return inner::UnaryExpression<OPERATOR, Operand>(operand); \
+  return internal::UnaryExpression<OPERATOR, Operand>(operand); \
 } \
 
 //}}}

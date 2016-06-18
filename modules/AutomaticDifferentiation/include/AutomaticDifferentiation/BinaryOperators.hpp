@@ -188,7 +188,7 @@ struct min
 
 } // basics
 
-namespace inner {
+namespace internal {
 
 template <
     typename Left,
@@ -235,29 +235,29 @@ using RightConstBinaryExpression = expressions::BinaryExpression<
     variable::ConstVariable<Type>
 >;
 
-} // inner
+} // internal
 
 #define NYAONN_DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR) \
 template< typename Left, typename Right > \
-nyao::differentiation::automatic::operators::inner::BinaryExpression<Left, OPERATOR, Right> \
+nyao::differentiation::automatic::operators::internal::BinaryExpression<Left, OPERATOR, Right> \
 OPERATOR_NAME(const expressions::Expression<Left>& left, const expressions::Expression<Right>& right)\
 { \
-  return nyao::differentiation::automatic::operators::inner::BinaryExpression<Left, OPERATOR, Right>(left, right); \
+  return nyao::differentiation::automatic::operators::internal::BinaryExpression<Left, OPERATOR, Right>(left, right); \
 } \
 template< typename Left, typename Type > \
-nyao::differentiation::automatic::operators::inner::RightConstBinaryExpression<Left, OPERATOR, Type> \
+nyao::differentiation::automatic::operators::internal::RightConstBinaryExpression<Left, OPERATOR, Type> \
 OPERATOR_NAME(const expressions::Expression<Left>& left, const Type& right)\
 {\
-  return nyao::differentiation::automatic::operators::inner::RightConstBinaryExpression<Left, OPERATOR, Type>( \
+  return nyao::differentiation::automatic::operators::internal::RightConstBinaryExpression<Left, OPERATOR, Type>( \
     left, \
     variable::ConstVariable<Type>(right) \
   ); \
 }\
 template< typename Type, typename Right > \
-nyao::differentiation::automatic::operators::inner::LeftConstBinaryExpression<Type, OPERATOR, Right> \
+nyao::differentiation::automatic::operators::internal::LeftConstBinaryExpression<Type, OPERATOR, Right> \
 OPERATOR_NAME(const Type& left, const expressions::Expression<Right>& right)\
 {\
-  return nyao::differentiation::automatic::operators::inner::LeftConstBinaryExpression<Type, OPERATOR, Right>(\
+  return nyao::differentiation::automatic::operators::internal::LeftConstBinaryExpression<Type, OPERATOR, Right>(\
     variable::ConstVariable<Type>(left), \
     right \
   ); \
