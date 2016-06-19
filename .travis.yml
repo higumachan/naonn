@@ -24,6 +24,7 @@ compiler:
   - gcc
 # Build steps
 script:
-  - ls
-  - cmake . && make
+  - mkdir build
+  - tree
+  - cmake .. && make
 
