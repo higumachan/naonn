@@ -13,13 +13,12 @@ addons:
     # install toolchains
     - gcc-5
     - g++-5
-    - clang-3.8
+    - clang
 
 # Enable C++ support
 language: cpp
 # Compiler selection
 compiler:
-  - clang
   - gcc
 # Build steps
 script:
