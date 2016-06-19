@@ -13,5 +13,5 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
 endforeach()
 
 add_executable(run_tests ${TEST_RUN_SOURCE} ${TEST_SOURCES})
-target_link_libraries(run_tests AutomaticDifferentiation NeuralNetwork)
+target_link_libraries(run_tests gtest AutomaticDifferentiation NeuralNetwork)
 

@@ -1,0 +1,37 @@
+//
+// Created by Yuta Hinokuma on 2016/06/14.
+//
+
+#ifndef NAONN_BASEEXPRESSION_HPP
+#define NAONN_BASEEXPRESSION_HPP
+
+#include "Variable.hpp"
+#include <type_traits>
+#include <utility>
+
+namespace nyao
+{
+namespace differentiation
+{
+namespace automatic
+{
+namespace expressions
+{
+
+template<typename ExpressionImpl>
+struct Expression : public ExpressionImpl
+{
+  template<typename... Args>
+  Expression(Args... args) : ExpressionImpl(std::forward<Args>(args)...) {}
+
+  using value_type = typename ExpressionImpl::value_type;
+  using grad_type = typename ExpressionImpl::grad_type;
+};
+
+} // expressions
+} // automatic
+} // differentiation
+} // nyao
+
+
+#endif //NAONN_BASEEXPRESSION_HPP
