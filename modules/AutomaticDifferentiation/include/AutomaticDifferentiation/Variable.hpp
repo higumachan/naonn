@@ -99,8 +99,8 @@ struct ConstVariable
   value_type get_value() const
   { return value; }
 
-  template<int ID>
-  grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
+  template<typename OtherType, int ID, typename OtherTypeHelper>
+  grad_type get_grad(const Variable<OtherType, ID, OtherTypeHelper>&) const
   {
     return TypeHelper::zero();
   }
