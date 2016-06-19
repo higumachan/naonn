@@ -8,14 +8,12 @@ addons:
     sources:
     # add PPAs with more up-to-date toolchains
     - ubuntu-toolchain-r-test
-    #- llvm-toolchain-precise-3.6
+    #- llvm-toolchain-precise-3.8
     packages:
     # install toolchains
     - gcc-5
     - g++-5
-    #- clang-3.6
-    - clang
-    - tree
+    - clang-3.8
 
 # Enable C++ support
 language: cpp
@@ -26,7 +24,6 @@ compiler:
 # Build steps
 script:
   - mkdir build
-  - tree
   - cd build
   - cmake .. && make
 
