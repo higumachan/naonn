@@ -89,8 +89,6 @@ struct ConstVariable
   using value_type = Type;
   using grad_type = Type;
 
-  static_assert(!std::is_reference<value_type>::value, "reference");
-
   ConstVariable(const Type& _value)
   {
     value = _value;
