@@ -26,6 +26,7 @@ struct ApplyUnaryOperator
   >;
   using result_of_apply = typename unary_operator::result_of_apply;
   using result_of_grad = typename unary_operator::result_of_grad;
+  using type_helper = type_helper::TypeHelper<typename Operand::value_type>;
 
   static result_of_apply apply(const Operand& operand)
   {
@@ -39,7 +40,7 @@ struct ApplyUnaryOperator
       const Operand& operand
   )
   {
-    return (unary_operator::grad(operand.get_value()) * operand.get_grad(target));
+    return type_helper::multiply(unary_operator::grad(operand.get_value()), operand.get_grad(target));
   }
 };
 

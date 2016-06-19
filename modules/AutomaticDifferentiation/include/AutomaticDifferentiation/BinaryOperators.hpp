@@ -31,6 +31,7 @@ struct ApplyBinaryOperator
   >;
   using result_of_apply = typename binary_operator::result_of_apply;
   using result_of_grad = typename binary_operator::result_of_grad;
+  using type_helper = type_helper::TypeHelper<typename Left::value_type>;
 
   static result_of_apply apply(const Left& left, const Right& right)
   {
@@ -45,10 +46,20 @@ struct ApplyBinaryOperator
       const Right& right
   )
   {
-    return (binary_operator::grad_left(left.get_value(), right.get_value()) *
-        left.get_grad(target) +
-        binary_operator::grad_right(left.get_value(), right.get_value()) *
-            right.get_grad(target)
+    return (
+        type_helper::plus(
+            type_helper::multiply(
+                binary_operator::grad_left(
+                    left.get_value(),
+                    right.get_value()
+                ),
+                left.get_grad(target)
+            ),
+            type_helper::multiply(
+                binary_operator::grad_right(left.get_value(), right.get_value()),
+                right.get_grad(target)
+            )
+        )
     );
   }
 };
