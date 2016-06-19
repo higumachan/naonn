@@ -31,6 +31,7 @@ struct ApplyBinaryOperator
   >;
   using result_of_apply = typename binary_operator::result_of_apply;
   using result_of_grad = typename binary_operator::result_of_grad;
+  using type_helper = type_helper::TypeHelper<typename Left::value_type>;
 
   static result_of_apply apply(const Left& left, const Right& right)
   {
@@ -38,17 +39,27 @@ struct ApplyBinaryOperator
   }
 
 
-  template<typename TargetType, int ID>
+  template<typename TargetType, variable::id_type ID>
   static result_of_grad grad(
       const variable::Variable<TargetType, ID>& target,
       const Left& left,
       const Right& right
   )
   {
-    return (binary_operator::grad_left(left.get_value(), right.get_value()) *
-        left.get_grad(target) +
-        binary_operator::grad_right(left.get_value(), right.get_value()) *
-            right.get_grad(target)
+    return (
+        type_helper::plus(
+            type_helper::multiply(
+                binary_operator::grad_left(
+                    left.get_value(),
+                    right.get_value()
+                ),
+                left.get_grad(target)
+            ),
+            type_helper::multiply(
+                binary_operator::grad_right(left.get_value(), right.get_value()),
+                right.get_grad(target)
+            )
+        )
     );
   }
 };
@@ -160,7 +171,6 @@ template<typename InputTypeLeft, typename InputTypeRight>
 struct min
     : public BinaryOperatorBase<InputTypeLeft, InputTypeRight>
 {
-  static_assert(std::is_same<InputTypeLeft, InputTypeRight>(), "min operator is require same type left and right");
 
   using type_helper = type_helper::TypeHelper<InputTypeLeft>;
 
@@ -237,7 +247,7 @@ using RightConstBinaryExpression = expressions::BinaryExpression<
 
 } // internal
 
-#define NYAONN_DEFINE_BINARY_OPERATORS(OPERATOR_NAME, OPERATOR) \
+#define NYAO_NN_DEFINE_BINARY_OPERATOR(OPERATOR_NAME, OPERATOR) \
 template< typename Left, typename Right > \
 nyao::differentiation::automatic::operators::internal::BinaryExpression<Left, OPERATOR, Right> \
 OPERATOR_NAME(const expressions::Expression<Left>& left, const expressions::Expression<Right>& right)\
@@ -264,13 +274,13 @@ OPERATOR_NAME(const Type& left, const expressions::Expression<Right>& right)\
 }\
 
 
-NYAONN_DEFINE_BINARY_OPERATORS(operator+, basics::plus)
+NYAO_NN_DEFINE_BINARY_OPERATOR(operator+, basics::plus)
 
-NYAONN_DEFINE_BINARY_OPERATORS(operator*, basics::multiply)
+NYAO_NN_DEFINE_BINARY_OPERATOR(operator*, basics::multiply)
 
-NYAONN_DEFINE_BINARY_OPERATORS(min, basics::min)
+NYAO_NN_DEFINE_BINARY_OPERATOR(min, basics::min)
 
-NYAONN_DEFINE_BINARY_OPERATORS(max, basics::max)
+NYAO_NN_DEFINE_BINARY_OPERATOR(max, basics::max)
 
 
 } // operators

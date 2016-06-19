@@ -89,8 +89,6 @@ struct ConstVariable
   using value_type = Type;
   using grad_type = Type;
 
-  static_assert(!std::is_reference<value_type>::value, "reference");
-
   ConstVariable(const Type& _value)
   {
     value = _value;
@@ -99,8 +97,8 @@ struct ConstVariable
   value_type get_value() const
   { return value; }
 
-  template<int ID>
-  grad_type get_grad(const Variable<Type, ID, TypeHelper>&) const
+  template<typename OtherType, int ID, typename OtherTypeHelper>
+  grad_type get_grad(const Variable<OtherType, ID, OtherTypeHelper>&) const
   {
     return TypeHelper::zero();
   }

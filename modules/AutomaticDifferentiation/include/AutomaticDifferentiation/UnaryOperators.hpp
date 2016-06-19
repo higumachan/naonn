@@ -26,6 +26,7 @@ struct ApplyUnaryOperator
   >;
   using result_of_apply = typename unary_operator::result_of_apply;
   using result_of_grad = typename unary_operator::result_of_grad;
+  using type_helper = type_helper::TypeHelper<typename Operand::value_type>;
 
   static result_of_apply apply(const Operand& operand)
   {
@@ -33,13 +34,13 @@ struct ApplyUnaryOperator
   }
 
 
-  template<typename TargetType, int ID>
+  template<typename TargetType, variable::id_type ID>
   static result_of_grad grad(
       const variable::Variable<TargetType, ID>& target,
       const Operand& operand
   )
   {
-    return (unary_operator::grad(operand.get_value()) * operand.get_grad(target));
+    return type_helper::multiply(unary_operator::grad(operand.get_value()), operand.get_grad(target));
   }
 };
 
@@ -172,8 +173,8 @@ using UnaryExpression = expressions::UnaryExpression<
 >;
 } // internal
 
-// {{{ DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR_TYPE)
-#define DEFINE_UNARY_OPERATORS(OPERATOR_NAME, OPERATOR)\
+// {{{ NYAO_NN_DEFINE_UNARY_OPERATOR(OPERATOR_NAME, OPERATOR_TYPE)
+#define NYAO_NN_DEFINE_UNARY_OPERATOR(OPERATOR_NAME, OPERATOR)\
 template< \
   typename Operand \
 > \
@@ -184,15 +185,15 @@ internal::UnaryExpression<OPERATOR, Operand> OPERATOR_NAME(const expressions::Ex
 
 //}}}
 
-DEFINE_UNARY_OPERATORS(operator-, basics::negate)
+NYAO_NN_DEFINE_UNARY_OPERATOR(operator-, basics::negate)
 
-DEFINE_UNARY_OPERATORS(sin, basics::sin)
+NYAO_NN_DEFINE_UNARY_OPERATOR(sin, basics::sin)
 
-DEFINE_UNARY_OPERATORS(cos, basics::cos)
+NYAO_NN_DEFINE_UNARY_OPERATOR(cos, basics::cos)
 
-DEFINE_UNARY_OPERATORS(exp, basics::exp)
+NYAO_NN_DEFINE_UNARY_OPERATOR(exp, basics::exp)
 
-DEFINE_UNARY_OPERATORS(log, basics::log)
+NYAO_NN_DEFINE_UNARY_OPERATOR(log, basics::log)
 
 
 } // operators
