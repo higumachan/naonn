@@ -7,6 +7,7 @@
 
 #include "Variable.hpp"
 #include <type_traits>
+#include <utility>
 
 namespace nyao
 {
