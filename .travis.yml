@@ -24,7 +24,6 @@ compiler:
   - gcc
 # Build steps
 script:
-  - git submodule init
-  - git submodule update
+  - ls
   - cmake . && make
 
