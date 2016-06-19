@@ -15,6 +15,7 @@ addons:
     - g++-5
     #- clang-3.6
     - clang
+    - tree
 
 # Enable C++ support
 language: cpp
@@ -26,5 +27,6 @@ compiler:
 script:
   - mkdir build
   - tree
+  - cd build
   - cmake .. && make
 
