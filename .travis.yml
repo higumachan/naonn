@@ -25,7 +25,5 @@ script:
   - mkdir build
   - cd build
   - cmake .. && make
-#Test step
-script:
   - bin/run_tests
 
