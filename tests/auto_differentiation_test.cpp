@@ -249,3 +249,22 @@ TEST(basic_grad, return_variable)
   ASSERT_FLOAT_EQ(t.get_value(), 4.0f);
   ASSERT_FLOAT_EQ(t.get_grad(x), 4.0f);
 }
+
+TEST(basic_grad, string_variable)
+{
+  NYAO_NN_VARIABLE(std::string) x("x");
+
+  auto t = x * x;
+  auto t2 = operators::sin(x);
+  auto t3 = t * t2;  // x^2 * sin(x)
+  auto t4 = t * 4.0f;
+
+  ASSERT_EQ(t.get_value(), "x*x");
+  ASSERT_EQ(t.get_grad(x), "x+x");
+  ASSERT_EQ(t2.get_value(), "sin(x)");
+  ASSERT_EQ(t2.get_grad(x), "cos(x)");
+  ASSERT_EQ(t3.get_value(), "x*x*sin(x)");
+  ASSERT_EQ(t3.get_grad(x), "sin(x)*x+x+x*x*cos(x)");
+  ASSERT_EQ(t4.get_value(), "x*x*4");
+  ASSERT_EQ(t4.get_grad(x), "4*x+x");
+}
