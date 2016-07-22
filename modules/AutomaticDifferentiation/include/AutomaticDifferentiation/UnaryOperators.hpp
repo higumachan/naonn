@@ -123,7 +123,7 @@ struct cos
 
   static Type grad(const Type& x)
   {
-    return type_helper::negate(type_helper::sin(x));
+    return -type_helper::sin(x);
   }
 };
 
